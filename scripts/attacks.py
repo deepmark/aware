@@ -176,33 +176,6 @@ class DeleteSamples(Attack):
         ])
 
         return audio
-    
-
-class Cropout(Attack):
-    """Delete samples attack"""
-    
-    def __init__(self, percentage):
-        """
-        Args:
-            percentage: Percentage of samples to delete (0-1)
-        """
-        self.percentage = percentage
-        self.name = f"cropout_{percentage}"
-    
-    def apply(self, audio, sr):
-        """Delete percentage of samples from the audio
-        
-        Args:
-            audio: Input audio (float32, range -1 to 1)
-            sr: Sample rate
-        """
-        samples_to_delete = int(self.percentage * sr)
-        start_delete = 0
-        end_delete = start_delete + samples_to_delete
-        
-        audio_ = audio[end_delete:]
-
-        return audio_
 
 
 class TimeStretch(Attack):
@@ -256,7 +229,7 @@ class PitchShift(Attack):
 class Resample(Attack):
     """Resample attack"""
     
-    def __init__(self, target_sr=16000):
+    def __init__(self, target_sr=32000):
         """
         Args:
             target_sr: Target sample rate for downsampling
