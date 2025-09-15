@@ -27,7 +27,7 @@ scheduler_cfg:
 loss: push_extremes  # hinge, mse, push_extremes, push_sigmoid, sign, bce, ber
 
 # Logging
-verbose: false
+verbose: False
 
 # Detection network configuration
 detection_net_cfg:
