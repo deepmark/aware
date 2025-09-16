@@ -30,6 +30,18 @@ class Attack(ABC):
         pass
 
 
+class NoAttack(Attack):
+    def __init__(self):
+        super().__init__()
+
+        self.name = "no_attack"
+
+    def apply(self, audio, sr):
+        audio_ = audio.copy()
+
+        return audio_
+
+
 class PCMBitDepthConversion(Attack):
     """PCM bit depth conversion attack"""
     
@@ -261,7 +273,7 @@ class Resample(Attack):
         
         else:
             from scipy.signal import resample_poly
-            up, down = 441, 160
+            up, down = self.target_sr, 16000
             audio_ = resample_poly(audio, up, down)
             audio_ = resample_poly(audio_, down, up)
             return audio_
