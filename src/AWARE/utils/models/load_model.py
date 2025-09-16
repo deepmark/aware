@@ -8,16 +8,18 @@ def load():
     cards_dir = script_dir / "cards"
 
     # Load configurations
-    logger.info("Loading configurations...")
     try:
         config = load_config(cards_dir / "config.yaml")
-        logger.info("Config loaded successfully")
     except Exception as e:
         logger.error(f"Error loading configs: {e}")
         return
+    
+    verbose = config.get("verbose", True)
+    
+    if verbose:
+        logger.info("Config loaded successfully")
+        logger.info("Creating embedder...")
 
-
-    logger.info("Creating embedder...")
     try:
         embedder = AWAREEmbedder(
             frame_length=config.get("frame_length", 1024),
@@ -34,14 +36,16 @@ def load():
             loss=config.get("loss", "push_extremes"),
             verbose=config.get("verbose", True)
         )
-        logger.info("Embedder created successfully")
-        logger.info(f"   - Tolerance: {embedder.tolerance_db} dB")
-        logger.info(f"   - Iterations: {embedder.num_iterations}")
-        logger.info(f"   - Embedding bands: {embedder.embedding_bands} Hz")
-        logger.info(f"   - Loss function: {embedder.loss}")   
-        logger.info(f"   - Pattern mode: {embedder.pattern_mode}")
-        logger.info(f"   - Optimizer: {embedder.optimizer_name}")
-        logger.info(f"   - Scheduler: {embedder.scheduler_name}")
+
+        if verbose:
+            logger.info("Embedder created successfully")
+            logger.info(f"   - Tolerance: {embedder.tolerance_db} dB")
+            logger.info(f"   - Iterations: {embedder.num_iterations}")
+            logger.info(f"   - Embedding bands: {embedder.embedding_bands} Hz")
+            logger.info(f"   - Loss function: {embedder.loss}")   
+            logger.info(f"   - Pattern mode: {embedder.pattern_mode}")
+            logger.info(f"   - Optimizer: {embedder.optimizer_name}")
+            logger.info(f"   - Scheduler: {embedder.scheduler_name}")
     except Exception as e:
         logger.error(f"Error creating embedder: {e}")
         import traceback
@@ -49,8 +53,8 @@ def load():
         return
     
 
-
-    logger.info("Creating detector...")
+    if verbose:
+        logger.info("Creating detector...")
     try:
         detector = AWAREDetector(
             model=embedder.detection_net,
@@ -62,10 +66,12 @@ def load():
             pattern_mode=config.get("pattern_mode", "bipolar"),
             embedding_bands=tuple(config.get("embedding_bands", [500, 4000]))
         )
-        logger.info("Detector created successfully")
-        logger.info(f"   - Threshold: {detector.threshold}")       
-        logger.info("Model info:")
-        logger.info(detector.detection_net.get_model_info())    
+
+        if verbose:
+            logger.info("Detector created successfully")
+            logger.info(f"   - Threshold: {detector.threshold}")       
+            logger.info("Model info:")
+            logger.info(detector.detection_net.get_model_info())    
     except Exception as e:
         logger.error(f"Error creating detector: {e}")
         import traceback

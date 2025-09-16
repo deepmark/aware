@@ -133,8 +133,9 @@ class AWAREEmbedder(BaseEmbedder):
                       f"Neural: {loss.item():.6f} | BER: {ber.item():.6f} | Imp: {imperceptibility.item():.6f} | "
                       f"LR: {lr:.6f} | Time: {elapsed:.1f}s")
 
-        logger.info(f"Optimization completed in {time.time() - start_time:.1f}s after {iteration+1} iterations")
-        logger.info(f"Final loss: {best_loss:.6f}")
+        if self.verbose:
+            logger.info(f"Optimization completed in {time.time() - start_time:.1f}s after {iteration+1} iterations")
+            logger.info(f"Final loss: {best_loss:.6f}")
         return best_coeffs.detach().cpu()
     
     
@@ -162,8 +163,6 @@ class AWAREEmbedder(BaseEmbedder):
         if self.verbose:
             logger.info(f"Starting optimization with {len(watermark_coeffs)} variables...")
             logger.info(f"Target: {self.num_iterations} iterations")
-            logger.debug(f"MAX bound: {max(max(b) for b in bounds)}")
-            logger.debug(f"MIN bound: {min(min(b) for b in bounds)}")
         try:
             watermarked_coeffs = self._optimize(watermark_coeffs, magnitude, watermark_pattern, freq_indices, not_freq_indices, bounds, phase)
         except Exception as e:
@@ -172,13 +171,6 @@ class AWAREEmbedder(BaseEmbedder):
 
         watermarked_magnitude = magnitude.clone().detach().cpu()  
         watermarked_magnitude[freq_indices] = watermarked_coeffs.reshape(len(freq_indices), -1)
-
-        if self.verbose:
-            mse = torch.mean((watermarked_magnitude[freq_indices] - magnitude[freq_indices])**2)
-            max_delta = torch.max(watermarked_magnitude[freq_indices] - magnitude[freq_indices])
-            logger.debug(f"Max delta: {max_delta.item():.6f}")
-            logger.debug(f"Magnitude MSE: {mse.item():.6f}")
-            logger.debug(f"Magnitude range: [{watermarked_coeffs.min().item():.6f}, {watermarked_coeffs.max().item():.6f}]")
 
         
         # Postprocess watermarked magnitude
