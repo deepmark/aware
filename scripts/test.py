@@ -4,7 +4,7 @@ from pathlib import Path
 from aware.utils import logger
 from aware.utils.models import load
 from aware.service import embed_watermark, detect_watermark
-from attacks import PCMBitDepthConversion, MP3Compression, DeleteSamples, PitchShift, TimeStretch, Resample, RandomBandstop, SampleSupression, LowPassFilter, HighPassFilter
+from attacks import NoAttack, PCMBitDepthConversion, MP3Compression, DeleteSamples, PitchShift, TimeStretch, Resample, RandomBandstop, SampleSupression, LowPassFilter, HighPassFilter
 from aware.metrics.audio import PESQ, BER, STOI
 
 import logging
@@ -12,7 +12,7 @@ logger.setLevel(logging.DEBUG)
 
 def main():
 
-    attack_list = [ PCMBitDepthConversion(8), PCMBitDepthConversion(12), PCMBitDepthConversion(16), PCMBitDepthConversion(24), 
+    attack_list = [ NoAttack(), PCMBitDepthConversion(8), PCMBitDepthConversion(12), PCMBitDepthConversion(16), PCMBitDepthConversion(24), 
                     MP3Compression(9), MP3Compression(5), MP3Compression(2), MP3Compression(0), DeleteSamples(0.1),
                     DeleteSamples(0.2), TimeStretch(0.8), TimeStretch(0.9), TimeStretch(1.1), TimeStretch(1.2), PitchShift(),
                     Resample(), RandomBandstop(), SampleSupression(0.1), SampleSupression(0.25), LowPassFilter() , HighPassFilter()] 
@@ -23,7 +23,7 @@ def main():
     # Paths
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
-    audio_folder_path = project_root / "libri"
+    audio_folder_path = project_root / "audio_samples"
     
 
     # Check if audio file exists
@@ -45,7 +45,6 @@ def main():
     rec={}
     rec["pesq"] = []
     rec["stoi"] = []
-    rec["orig"] = []
 
     for audio_file_path in input_dir.glob('*.*'):
         audio, sr = librosa.load(str(audio_file_path), sr=None, mono=True)
@@ -59,8 +58,9 @@ def main():
             from scipy.signal import resample_poly
             up, down = 16000, sr
             audio = resample_poly(audio, up, down)
-        
+
         sr=16000
+
         
         try:
             watermarked_audio = embed_watermark(audio, sample_rate=sr, watermark_bits = watermark_bits, model = embedder)
@@ -69,9 +69,6 @@ def main():
             print(f"Bad_input {audio_file_path.name}: ", e)
             continue
 
-        detected_pattern = detect_watermark(watermarked_audio, sr, detector)
-        
-        ber_ = ber_metric(watermark_bits, detected_pattern)
 
         try:
             pesq_ = pesq_metric(watermarked_audio, audio, sr)
@@ -91,9 +88,6 @@ def main():
             logger.debug("Not enough speach contnent for calculating STOI")
         
 
-        rec["orig"].append( ber_ )
-        logger.debug("orig: " + f"{ber_}")
-        
 
         for attack in attack_list:
             name = attack.name
