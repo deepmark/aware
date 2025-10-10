@@ -46,3 +46,8 @@ print(f"BER: {ber:.2f}")
 pesq_metric = PESQ()
 pesq = pesq_metric(watermarked_signal, signal, 16000)
 print(f"PESQ: {pesq:.2f}")
+```
+
+## License
+
+This project is licensed under the terms of the MIT license.
