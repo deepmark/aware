@@ -51,3 +51,20 @@ print(f"PESQ: {pesq:.2f}")
 ## License
 
 This project is licensed under the terms of the MIT license.
+
+## Citation
+If you find this repository useful, we’d greatly appreciate it if you could give it a star ⭐.
+
+Please cite our work if you use it in your research.
+
+```
+@article{pavlović2025aware,
+      title={AWARE: Audio Watermarking with Adversarial Resistance to Edits}, 
+      author={Kosta Pavlović and Lazar Stanarević and Petar Nedić and Slavko Kovačević and Igor Djurović},
+      year={2025},
+      eprint={2510.17512},
+      archivePrefix={arXiv},
+      primaryClass={cs.SD},
+      url={https://arxiv.org/abs/2510.17512}, 
+}
+```
