@@ -11,11 +11,10 @@ import logging
 logger.setLevel(logging.DEBUG)
 
 def main():
-
-    attack_list = [ NoAttack(), PCMBitDepthConversion(8), PCMBitDepthConversion(12), PCMBitDepthConversion(16), PCMBitDepthConversion(24), 
-                    MP3Compression(9), MP3Compression(5), MP3Compression(2), MP3Compression(0), DeleteSamples(0.1),
-                    DeleteSamples(0.2), TimeStretch(0.8), TimeStretch(0.9), TimeStretch(1.1), TimeStretch(1.2), PitchShift(),
-                    Resample(), RandomBandstop(), SampleSupression(0.1), SampleSupression(0.25), LowPassFilter() , HighPassFilter()] 
+    attack_list = [ NoAttack(), PCMBitDepthConversion(8),  
+                    MP3Compression(9), MP3Compression(0), 
+                    DeleteSamples(0.5), TimeStretch(0.7),TimeStretch(1.5), PitchShift(cents=10),
+                    Resample(), RandomBandstop(), LowPassFilter() , HighPassFilter()] 
 
     print("Watermark Test Pipeline")
     print("=" * 50)
@@ -23,7 +22,7 @@ def main():
     # Paths
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
-    audio_folder_path = project_root / "audio_samples"
+    audio_folder_path = project_root / "libri"
     
 
     # Check if audio file exists
@@ -94,7 +93,7 @@ def main():
             
             wm_attacked = attack.apply(watermarked_audio, sr)
             
-            detected_pattern = detect_watermark(wm_attacked, sr, detector)
+            detected_pattern, confidence = detect_watermark(wm_attacked, sr, detector)
             
             ber = ber_metric(watermark_bits, detected_pattern)
             
@@ -102,7 +101,7 @@ def main():
                 rec[name] = []
             rec[name].append(ber)
 
-            logger.debug(name + ": " + f"{ber:.2f}")
+            logger.debug(name + ": " + f"{ber:.2f}" + f" (confidence: {confidence:.4f})")
             
     
     for att in rec.keys():

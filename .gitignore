@@ -195,3 +195,7 @@ cython_debug/
 
 
 samples
+
+*.wav
+*.flac
+*.mp3
