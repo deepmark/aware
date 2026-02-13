@@ -173,7 +173,8 @@ class AWAREEmbedder(BaseEmbedder):
         watermarked_magnitude[freq_indices] = watermarked_coeffs.reshape(len(freq_indices), -1)
 
         
-        # Postprocess watermarked magnitude
+        # Postprocess watermarked magnitude - ensure both tensors are on same device (CPU)
+        phase = phase.detach().cpu() if phase.device != watermarked_magnitude.device else phase.detach()
         y = (watermarked_magnitude, phase)
         for processor in self.audio_postprocess_pipeline:
             if isinstance(y, tuple) and len(y) == 2:

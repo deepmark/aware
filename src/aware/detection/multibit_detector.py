@@ -11,6 +11,7 @@ class AWAREDetector(BaseDetector):
         self.threshold = threshold
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+        self.output_length = model.output_length
         self.pattern_mode = pattern_mode
 
         self.embedding_bands = embedding_bands

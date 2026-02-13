@@ -2,6 +2,7 @@ import numpy as np
 from aware.detection.multibit_detector import AWAREDetector
 from aware.utils.watermark import PatternDecoder
 from aware.utils.logger import logger
+from aware.utils.utils import BRH_activation_to_probability
 
 
 def detect_watermark(audio: np.ndarray, sample_rate: int, detector: AWAREDetector):
@@ -39,7 +40,7 @@ def detect_watermark(audio: np.ndarray, sample_rate: int, detector: AWAREDetecto
         for processor in pattern_postprocess_pipeline:
             watermark_bits = processor(watermark_bits)
 
-        return watermark_bits
+        return watermark_bits, BRH_activation_to_probability(np.sum(np.abs(detected_values)) / detector.output_length)
 
     elif len(audio.shape) == 1: # mono
         detected_values = detector.detect(audio, sample_rate)
@@ -48,7 +49,7 @@ def detect_watermark(audio: np.ndarray, sample_rate: int, detector: AWAREDetecto
         for processor in pattern_postprocess_pipeline:
             watermark_bits = processor(watermark_bits)
 
-        return watermark_bits
+        return watermark_bits, BRH_activation_to_probability(np.sum(np.abs(detected_values)) / detector.output_length)
 
     else:
         logger.error("Invalid audio shape. Expected 1D or 2D numpy array.")

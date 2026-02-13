@@ -10,7 +10,7 @@ pattern_mode: bits2bipolar  # bipolar, unipolar, bits
 watermark_length: 20  # number of bits in the watermark
 
 # Watermark parameters
-embedding_bands: [500, 4000]  # frequency range for embedding (Hz)
+embedding_bands: [1000, 4000]  # frequency range for embedding (Hz)
 tolerance_db: 6.0  # lower = stronger watermark, higher = weaker watermark
 
 # Optimization parameters
@@ -35,8 +35,8 @@ detection_net_cfg:
   n_fft: 1024
   n_mels: 128
   num_blocks: 3
-  initial_pool_size: 2
-  initial_pool_stride: 2
+  initial_pool_size: 1
+  initial_pool_stride: 1
   n_filters: [512, 1024, 1024]
   activation: leaky_relu
   output_length: 20
