@@ -3,13 +3,21 @@ from aware.embedding import AWAREEmbedder
 from aware.detection import AWAREDetector
 from aware.utils import load_config, logger
 
-def load():
+CONFIGS = {
+    "full_length": "config_full_length.yaml",
+    "segments": "config_segments.yaml",
+}
+
+def load(name: str = "segments"):
+    if name not in CONFIGS:
+        raise ValueError(f"Unknown config name '{name}'. Choose from: {list(CONFIGS.keys())}")
+
     script_dir = Path(__file__).parent.parent.parent
     cards_dir = script_dir / "cards"
 
     # Load configurations
     try:
-        config = load_config(cards_dir / "config.yaml")
+        config = load_config(cards_dir / CONFIGS[name])
     except Exception as e:
         logger.error(f"Error loading configs: {e}")
         return
@@ -34,7 +42,8 @@ def load():
             optimizer_cfg=config.get("optimizer_cfg", {"name": "nadam", "params": {"lr": 0.1}}),
             scheduler_cfg=config.get("scheduler_cfg", {"name": "reduce_lr_on_plateau", "params": {"factor": 0.9, "patience": 500}}),
             loss=config.get("loss", "push_extremes"),
-            verbose=config.get("verbose", True)
+            verbose=config.get("verbose", True),
+            mode_name=name
         )
 
         if verbose:
@@ -64,7 +73,8 @@ def load():
             window=config.get("window", "hann"),
             win_length=config.get("win_length", 1024),
             pattern_mode=config.get("pattern_mode", "bipolar"),
-            embedding_bands=tuple(config.get("embedding_bands", [500, 4000]))
+            embedding_bands=tuple(config.get("embedding_bands", [500, 4000])),
+            mode_name=name
         )
 
         if verbose:

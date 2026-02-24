@@ -7,7 +7,7 @@ from aware.utils.audio import WaveformNormalizer, STFTDecomposer, STFT
 
 
 class AWAREDetector(BaseDetector):
-    def __init__(self, model: BaseDetectorNet, threshold: float = 0.0, frame_length: int = 1024, hop_length: int = 256, window: str = "hann", win_length: int = 1024, pattern_mode: str = "bits2bipolar", embedding_bands: tuple[int, int] = (500, 4000)):
+    def __init__(self, model: BaseDetectorNet, threshold: float = 0.0, frame_length: int = 1024, hop_length: int = 256, window: str = "hann", win_length: int = 1024, pattern_mode: str = "bits2bipolar", embedding_bands: tuple[int, int] = (500, 4000), mode_name: str = "full_length"):
         self.threshold = threshold
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -19,6 +19,8 @@ class AWAREDetector(BaseDetector):
         self.win_length = frame_length
         self.frame_length = frame_length
         self.hop_length = hop_length
+
+        self.mode_name = mode_name
 
         self.detection_net = model
         self.detection_net.eval().to(self.device)

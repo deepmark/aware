@@ -24,6 +24,11 @@ def embed_watermark(audio: np.ndarray, sample_rate: int, watermark_bits:bytes | 
     if sample_rate != 16000:
         logger.error(f"Invalid sample rate. Expected 16000Hz, got {sample_rate}Hz.")
         raise ValueError("Invalid sample rate. Expected 16000Hz.")
+    
+    if audio.ndim != 1:
+        logger.error(f"Invalid audio shape. Expected mono (1D) signal, got shape {audio.shape}.")
+        raise ValueError(f"Invalid audio shape. Expected mono (1D) signal, got shape {audio.shape}.")
+    
 
     watermark = watermark_bits
     for processor in pattern_preprocess_pipeline:
@@ -33,32 +38,7 @@ def embed_watermark(audio: np.ndarray, sample_rate: int, watermark_bits:bytes | 
         logger.error(f"Invalid watermark length. Expected {model.detection_net.output_length}, got {len(watermark)}.")
         raise ValueError(f"Invalid watermark length.")
     
-    
-    if len(audio.shape) == 2 and audio.shape[1]==2: #stereo
-        left_channel = audio[:, 0]
-        right_channel = audio[:, 1]
-
-        left_mx = np.max(left_channel)
-        right_mx = np.max(right_channel)
-
-        for process in silence_checker_pipeline:
-            is_silent_left = process(left_channel)
-            is_silent_right = process(right_channel)
-
-        if is_silent_left == True and is_silent_right == True:
-            logger.error(f"Signal you provided doesn't contain any speach. Please provide signal that contains speach.")
-            raise ValueError(f"Signal you provided doesn't contain any speach. Please provide signal that contains speach.")
-
-        left_watermarked = model.embed(left_channel, sample_rate, watermark)
-        right_watermarked = model.embed(right_channel, sample_rate, watermark)
-
-        left_watermarked = left_mx * left_watermarked
-        right_watermarked = right_mx * right_watermarked
-
-        # Combine left and right watermarked channels
-        watermarked_audio = np.column_stack((left_watermarked, right_watermarked))
-
-    elif len(audio.shape) == 1 or audio.shape[1] == 1: # mono        
+    if model.mode_name == "full_length":
         for process in silence_checker_pipeline:
             is_silent = process(audio)
 
@@ -71,6 +51,36 @@ def embed_watermark(audio: np.ndarray, sample_rate: int, watermark_bits:bytes | 
         watermarked_audio = model.embed(audio, sample_rate, watermark)
 
         watermarked_audio = audio_mx * watermarked_audio
+        
+    elif model.mode_name == "segments":        
+        for process in silence_checker_pipeline:
+            is_silent = process(audio)
+
+        if is_silent == True:
+            logger.error(f"Signal you provided doesn't contain any speach. Please provide signal that contains speach.")
+            raise ValueError(f"Signal you provided doesn't contain any speach. Please provide signal that contains speach.")
+
+        start = 0
+        step = sample_rate+128
+        wm_audio = []
+        while start < len(audio):
+            audio_ = audio[start:start+step]
+            start += step
+
+            if len(audio_) < step:
+                audio_ = np.pad(audio_, (0, step - len(audio_)), mode='constant')
+
+            audio_mx = np.max(audio_)
+            
+            watermarked_audio = model.embed(audio_, sample_rate, watermark)
+
+            watermarked_audio = audio_mx * watermarked_audio
+
+            wm_audio.append(watermarked_audio)
+
+        wm_audio = np.concatenate(wm_audio)
+        return wm_audio[:len(audio)]
+
 
     else:
         logger.error("Invalid audio shape. Expected 1D or 2D numpy array.")

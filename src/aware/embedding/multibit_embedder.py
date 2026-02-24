@@ -15,7 +15,7 @@ from aware.utils.logger import logger
 from aware.utils.utils import to_tensor
 
 class AWAREEmbedder(BaseEmbedder):
-    def __init__(self, frame_length: int = 1024, hop_length: int = 256, window: str = "hann", win_length: int = 1024, pattern_mode: str = "bits2bipolar", embedding_bands: tuple[int, int] = (500, 4000), tolerance_db: float = 6.0, num_iterations: int = 400, detection_net_cfg: dict = None, optimizer_cfg: dict = None, scheduler_cfg: dict = None, loss:str = "push", verbose: bool = True):
+    def __init__(self, frame_length: int = 1024, hop_length: int = 256, window: str = "hann", win_length: int = 1024, pattern_mode: str = "bits2bipolar", embedding_bands: tuple[int, int] = (500, 4000), tolerance_db: float = 6.0, num_iterations: int = 400, detection_net_cfg: dict = None, optimizer_cfg: dict = None, scheduler_cfg: dict = None, loss:str = "push", verbose: bool = True, mode_name:str = "full_length"):
         self.frame_length = frame_length
         self.hop_length = hop_length
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -36,6 +36,7 @@ class AWAREEmbedder(BaseEmbedder):
         self.loss = get_loss_fn(loss)
 
         self.verbose = verbose
+        self.mode_name = mode_name
         
         self.audio_preprocess_pipeline = [WaveformNormalizer(), STFT(frame_length, hop_length, window, win_length), STFTDecomposer()]
         self.audio_postprocess_pipeline = [STFTAssembler(), ISTFT(frame_length, hop_length, window, win_length), WaveformNormalizer()]
