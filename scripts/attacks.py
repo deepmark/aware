@@ -6,9 +6,6 @@ import os
 import time
 import random
 import pyrubberband as pyrb
-import librosa
-import librosa.display
-import matplotlib.pyplot as plt
 from scipy.signal import butter, filtfilt, sosfiltfilt, lfilter, spectrogram
 from abc import ABC, abstractmethod
 
