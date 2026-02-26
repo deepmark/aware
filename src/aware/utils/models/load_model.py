@@ -8,7 +8,14 @@ CONFIGS = {
     "segments": "config_segments.yaml",
 }
 
-def load(name: str = "segments"):
+NAMES = {
+    "AWARE":"full_length",
+    "AWARE(20bps)":"segments"
+}
+
+def load(name: str = "AWARE"):
+    name = NAMES.get(name, None)
+
     if name not in CONFIGS:
         raise ValueError(f"Unknown config name '{name}'. Choose from: {list(CONFIGS.keys())}")
 
