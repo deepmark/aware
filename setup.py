@@ -8,8 +8,8 @@ setup(
     package_dir={"": "src"},
     python_requires=">=3.9,<3.13",
     install_requires=[
-        "torch==2.7.0",
-        "torchaudio==2.7.0",
+        "torch==2.7.1",
+        "torchaudio==2.7.1",
         "numpy==1.26.4",
         "librosa==0.9.2",
         "soundfile==0.12.1",
