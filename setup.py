@@ -6,12 +6,14 @@ setup(
     description="Audio watermarking with small (Δ) adversarial perturbations.",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
+    package_data={"aware": ["cards/*.yaml"]},
     python_requires=">=3.9,<3.13",
     install_requires=[
         "torch==2.7.1",
         "torchaudio==2.7.1",
         "numpy==1.26.4",
         "librosa==0.9.2",
+        "setuptools<82",  # librosa 0.9.2 imports pkg_resources, which setuptools 82 removed
         "soundfile==0.12.1",
         "pydantic==2.5.0",
         "matplotlib==3.7.2",

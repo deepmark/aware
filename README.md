@@ -2,7 +2,16 @@
 
 ## Installation
 ```bash
-git clone https://github.com/deepmarkpy/aware.git
+pip install git+https://github.com/deepmark/aware
+```
+
+AWARE runs on Python 3.9 to 3.12. `webrtcvad` (and, on Python 3.12, `matplotlib`)
+is built from source during the install, so a C compiler and the Python headers
+are needed (`sudo apt-get install build-essential python3-dev` on Debian/Ubuntu).
+
+For development, install from a clone in editable mode:
+```bash
+git clone https://github.com/deepmark/aware.git
 cd ./aware
 python -m pip install -e .
 ```
@@ -27,8 +36,8 @@ watermark_bits = np.random.randint(0, 2, size=20, dtype=np.int32)
 
 
 # 3.read host audio
-# the audio should be sampled at 16kHz, you can read it using librosa:
-signal, sample_rate = librosa.load("example.wav", sr=None, mono=True)
+# AWARE works at 16 kHz; librosa resamples the file on load:
+signal, sample_rate = librosa.load("example.wav", sr=16000, mono=True)
 
 
 # 4.embed watermark
