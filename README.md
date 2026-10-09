@@ -2,7 +2,7 @@
 
 ## Installation
 ```bash
-pip install git+https://github.com/deepmark/aware
+pip install aware
 ```
 
 AWARE runs on Python 3.9 to 3.12. `webrtcvad` (and, on Python 3.12, `matplotlib`)
