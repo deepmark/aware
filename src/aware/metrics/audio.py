@@ -1,3 +1,4 @@
+from __future__ import annotations
 from aware.interfaces.metrics import BaseMetrics
 import torch
 import numpy as np
