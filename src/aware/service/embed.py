@@ -1,3 +1,4 @@
+from __future__ import annotations
 from aware.embedding.multibit_embedder import AWAREEmbedder
 from aware.utils.audio import SilenceChecker
 from aware.utils.watermark import PatternEncoder
