@@ -1,0 +1,41 @@
+# Dependabot version and security updates.
+# Security fixes arrive as one grouped PR per ecosystem as soon as an advisory
+# is published; routine minor/patch bumps are grouped into one weekly PR.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directories:
+      - "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      security:
+        applies-to: "security-updates"
+        patterns: ["*"]
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      # Major upgrades need deliberate migration; security fixes are unaffected.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: "pip"
+    directories:
+      - "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      security:
+        applies-to: "security-updates"
+        patterns: ["*"]
+      minor-and-patch:
+        applies-to: "version-updates"
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      # Major upgrades need deliberate migration; security fixes are unaffected.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
