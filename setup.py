@@ -35,7 +35,7 @@ setup(
     package_data={"aware": ["cards/*.yaml"]},
     python_requires=">=3.9,<3.13",
     install_requires=[
-        "torch==2.7.1",
+        "torch==2.13.0",
         "torchaudio==2.7.1",
         "numpy==1.26.4",
         "librosa==0.9.2",
@@ -46,7 +46,7 @@ setup(
         "scikit-learn==1.5.0",
         "numba==0.59.0",
         "resampy==0.4.2",
-        "tqdm==4.66.1",
+        "tqdm==4.66.3",
         "pesq==0.0.4",
         "pyyaml==6.0.1",
         "pystoi==0.4.1",
