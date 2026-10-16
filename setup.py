@@ -39,7 +39,7 @@ setup(
         "torchaudio==2.11.0",
         "numpy==1.26.4",
         "librosa==0.11.0",
-        "setuptools<82",  # librosa 0.9.2 imports pkg_resources, which setuptools 82 removed
+        "setuptools<85",  # librosa 0.9.2 imports pkg_resources, which setuptools 82 removed
         "soundfile==0.14.0",
         "pydantic==2.14.1",
         "matplotlib==3.10.9",
