@@ -36,15 +36,15 @@ setup(
     python_requires=">=3.9,<3.13",
     install_requires=[
         "torch==2.14.1",
-        "torchaudio==2.11.0",
+        "torchaudio==2.11.1",
         "numpy==1.26.4",
         "librosa==0.11.0",
         "setuptools<85",  # librosa 0.9.2 imports pkg_resources, which setuptools 82 removed
         "soundfile==0.14.0",
-        "pydantic==2.14.1",
+        "pydantic==2.14.2",
         "matplotlib==3.10.9",
         "scikit-learn==1.7.2",
-        "numba==0.68.0",
+        "numba==0.68.1",
         "resampy==0.4.3",
         "tqdm==4.70.1",
         "pesq==0.0.4",
